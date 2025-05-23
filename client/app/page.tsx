@@ -22,6 +22,9 @@ export default function Home() {
         <title className="text-black">Advicia | AI-Powered Ad Creation</title>
       </Head>
       <main className="min-h-screen  flex flex-col items-center justify-center bg-gray-100 p-6">
+        <h1 className="font-bold text-5xl border-b-2 px-4 border-black">
+          Adsevia
+        </h1>
         <section className="text-center max-w-2xl">
           <h1 className="text-4xl font-bold mb-4">
             Create. Optimize. Analyze. Scale.
@@ -39,7 +42,12 @@ export default function Home() {
               className="px-4 py-2 rounded-lg border border-gray-300 shadow-sm"
               required
             />
-            <button type="submit">Join the Waitlist</button>
+            <button
+              type="submit"
+              className="border-1 border-black p-3 bg-gray-300 hover:bg-gray-400"
+            >
+              Join the Waitlist
+            </button>
           </form>
         </section>
       </main>
