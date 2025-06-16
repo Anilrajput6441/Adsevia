@@ -12,6 +12,10 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        darumadrop: ["var(--font-darumadrop-one)"],
+        kanit: ["var(--font-kanit)"],
+      },
     },
   },
   plugins: [],

@@ -1,6 +1,21 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Darumadrop_One, Kanit } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
+import Header from "./components/Header";
+
+const darumadropOne = Darumadrop_One({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-darumadrop-one",
+});
+
+const kanit = Kanit({
+  weight: ["300", "400"],
+  subsets: ["latin"],
+  variable: "--font-kanit",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,9 +40,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${darumadropOne.variable} ${kanit.variable} antialiased`}
       >
+        <Header />
         {children}
+        <Toaster position="top-right" />
       </body>
     </html>
   );
