@@ -5,10 +5,10 @@ import Marquee from "react-fast-marquee";
 
 const Hero = () => {
   return (
-    <div className="relative h-screen w-full mt-[4%]">
+    <div className="relative h-screen w-full mt-[25%]  md:mt-[4%]">
       {/* Background video with dark overlay */}
-      <div className="absolute w-full h-full">
-        {/* <video
+      {/* <div className="absolute w-full h-full"> */}
+      {/* <video
           autoPlay
           muted
           loop
@@ -18,14 +18,14 @@ const Hero = () => {
           <source src="/hero-video/Expensive.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video> */}
-        {/* Black overlay */}
-        {/* <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-10"></div> */}
-      </div>
+      {/* Black overlay */}
+      {/* <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-10"></div> */}
+      {/* </div> */}
 
       {/* Content on top of video */}
-      <div className="absolute top-0 left-0 w-full p-10 h-full z-20 flex flex-col items-center justify-center gap-y-10">
+      <div className="absolute top-0 left-0 w-full  md:p-10 md:h-full z-20 flex flex-col items-center justify-center gap-y-10">
         <Marquee speed={100}>
-          <div className="flex items-center justify-evenly gap-20">
+          <div className="flex items-center justify-evenly gap-x-20">
             <Image
               src="https://img.freepik.com/premium-vector/factory-vector-logo-design-template-industrial-building-manufactory-badge_18099-5365.jpg?semt=ais_hybrid&w=740"
               alt="image"
@@ -70,7 +70,7 @@ const Hero = () => {
             />
           </div>
         </Marquee>
-        <h1 className="font-kanit">
+        <h1 className="font-kanit px-5 md:px-0">
           over <span className="font-bold text-xl">20,000 ads</span> already
           created and analyzed
         </h1>
@@ -82,19 +82,19 @@ const Hero = () => {
           The Future of Ads Creation Begins Here
           <p className="text-2xl mt-2 font-light">Next-Gen Ad Machine</p>
         </h1>
-        <p className="mt-4 text-lg  font-kanit font-light">
+        <p className="mt-4 text-lg p-5 md:p-0 font-kanit font-light">
           Design, scale, and publish campaigns faster, smarter, and more
           powerfully than ever before.
         </p>
         <div className="flex gap-4 p-5">
           <div className="">
-            <button className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-6 py-4  rounded-lg text-lg  transition hover:brightness-110 shadow-md">
+            <button className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-6 py-4  rounded-lg text-sm md:text-lg  transition hover:brightness-110 shadow-md">
               Try for Free now
             </button>
           </div>
           <div className="hover:bg-gray-50 rounded-lg">
             <button
-              className="flex justify-between items-center gap-2   px-6 py-4 rounded-lg transition hover:brightness-110 text-lg  border border-gray-100 shadow-lg 
+              className="flex justify-between items-center gap-2   px-6 py-4 rounded-lg transition hover:brightness-110 text-sm md:text-lg  border border-gray-100 shadow-lg 
              bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 
              bg-clip-text text-transparent "
             >

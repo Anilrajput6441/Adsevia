@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,16 +72,29 @@ const Header = () => {
               ></span>
             </a>
           ))}
+          {/* Dashboard link only for logged-in users */}
+          <SignedIn>
+            <a
+              href="/dashboard"
+              className="relative inline-block px-2 py-1 text-gray-700 font-bold transition group hover:text-purple-600"
+            >
+              Dashboard
+            </a>
+          </SignedIn>
         </div>
 
-        {/* CTA Button */}
-        <div className="hidden md:block">
-          <a
-            href="#get-started"
-            className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg transition hover:brightness-110 shadow-md"
-          >
-            Get Started
-          </a>
+        {/* Auth Buttons */}
+        <div className="hidden md:flex items-center gap-4">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg transition hover:brightness-110 shadow-md">
+                Sign in
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
         </div>
 
         {/* Mobile Menu Icon */}
@@ -104,13 +118,28 @@ const Header = () => {
               {link.label}
             </a>
           ))}
-          <a
-            href="#get-started"
-            className="block  text-white text-center py-2 rounded-lg mt-2 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 transition hover:brightness-110 shadow-md"
-            onClick={() => setIsOpen(false)}
-          >
-            Get Started
-          </a>
+          {/* Dashboard link only for logged-in users (mobile) */}
+          <SignedIn>
+            <a
+              href="/dashboard"
+              className="block text-purple-600 font-bold py-2 hover:text-purple-800 transition"
+              onClick={() => setIsOpen(false)}
+            >
+              Dashboard
+            </a>
+          </SignedIn>
+          <div className="pt-2">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="w-full bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg transition hover:brightness-110 shadow-md">
+                  Sign in
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+          </div>
         </div>
       )}
     </nav>
