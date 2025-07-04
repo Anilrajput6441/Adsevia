@@ -22,7 +22,7 @@ const VideoAdPrompt = () => {
   }, []);
 
   return (
-    <section className="bg-gradient-to-tl from-pink-200 via-orange-50 to-white rounded-3xl  px-6 py-12 lg:px-20 flex flex-col-reverse lg:flex-row items-center justify-between gap-10 shadow-md">
+    <section className="bg-gradient-to-tl from-pink-200 via-orange-50 to-white rounded-3xl font-kanit px-6 py-12 lg:px-20 flex flex-col-reverse lg:flex-row items-center justify-between gap-10 shadow-md">
       {/* LEFT:  Video Box */}
       <div className=" w-full md:w-1/2   flex flex-col items-center justify-center">
         <div className="relative overflow-hidden flex justify-center items-center   rounded-[3rem] w-[75vw] md:w-[18vw] h-[70vh] md:h-[74vh]">
@@ -66,11 +66,14 @@ const VideoAdPrompt = () => {
           />
         </div>
         <div>
-          {" "}
-          <h2 className="text-4xl font-extrabold text-gray-900 leading-tight">
-            Turn Your Ideas Into Video Ads Instantly
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+            Turn Your <br />
+            <span className="bg-gradient-to-r from-orange-500 to-pink-600 text-transparent bg-clip-text">
+              Ideas Into Video
+            </span>{" "}
+            Ads Instantly
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className=" mt-5 text-lg text-gray-600">
             Describe your product in one line — and let AI do the rest.
             We&apos;ll generate scroll-stopping video ads you can publish
             straight to Meta or Google. No design or editing needed.

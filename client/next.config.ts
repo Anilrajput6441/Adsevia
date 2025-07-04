@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
       "freepik.com",
       "cdn-icons-png.freepik.com",
       "images.unsplash.com",
+      "logowik.com",
+      "b2210413.smushcdn.com",
+      "cdn.prod.website-files.com",
+      "www.serendipiaagency.com",
     ], // <- add your domain here
   },
 };
