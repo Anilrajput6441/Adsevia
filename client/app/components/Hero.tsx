@@ -6,6 +6,13 @@ import Marquee from "react-fast-marquee";
 const Hero = () => {
   return (
     <div className="relative h-screen w-full mt-[25%]  md:mt-[4%]">
+      <Image
+        src="svg4.svg"
+        alt="Descriptive alt text"
+        width={400}
+        height={300}
+        className="h-full w-full"
+      />
       {/* Background video with dark overlay */}
       {/* <div className="absolute w-full h-full"> */}
       {/* <video

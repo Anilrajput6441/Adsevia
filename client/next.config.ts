@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       "cdn.prod.website-files.com",
       "www.serendipiaagency.com",
       "images.rawpixel.com",
+      "www.transparentpng.com",
     ], // <- add your domain here
   },
 };
