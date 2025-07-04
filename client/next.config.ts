@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       "b2210413.smushcdn.com",
       "cdn.prod.website-files.com",
       "www.serendipiaagency.com",
+      "images.rawpixel.com",
     ], // <- add your domain here
   },
 };

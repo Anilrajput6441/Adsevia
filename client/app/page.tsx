@@ -5,6 +5,8 @@ import Hero from "./components/Hero";
 import PartnerSection from "./components/PartnerSection";
 import PhotoToPhotoshoot from "./components/PhotoToPhotoshoot";
 import ServiceDiv from "./components/ServiceDiv";
+import TestimonialWall from "./components/TestimonialsSection";
+
 import VideoAdGenerator from "./components/VideoAdGenerator";
 
 export default function Home() {
@@ -16,6 +18,7 @@ export default function Home() {
       <VideoAdGenerator />
       <PhotoToPhotoshoot />
       <PartnerSection />
+      <TestimonialWall />
     </div>
   );
 }
