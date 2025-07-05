@@ -93,6 +93,10 @@ const Hero = () => {
           Design, scale, and publish campaigns faster, smarter, and more
           powerfully than ever before.
         </p>
+        <strong className="-mt-5 px-5 text-center">
+          Turn your product prompt into high-converting ads in under 15 seconds.
+          No designer. No copywriter.
+        </strong>
         <div className="flex gap-4 p-5">
           <div className="">
             <button className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-6 py-4  rounded-lg text-sm md:text-lg  transition hover:brightness-110 shadow-md">
