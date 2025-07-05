@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Menu,
   X,
@@ -20,7 +21,6 @@ import {
   Star,
   LayoutTemplate,
 } from "lucide-react";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 // Define a type for feature items
 interface FeatureItem {
@@ -28,6 +28,7 @@ interface FeatureItem {
   desc: string;
   icon: React.ReactNode;
   isNew?: boolean;
+  link?: string;
 }
 
 const features: Record<string, FeatureItem[]> = {
@@ -36,56 +37,66 @@ const features: Record<string, FeatureItem[]> = {
       title: "Ad Creatives",
       desc: "Generate conversion-focused ad creatives",
       icon: <ImageIcon className="w-4 h-4 mr-2 text-orange-500" />,
+      link: "/dashboard/create-ad",
     },
     {
       title: "Product Photoshoots",
       desc: "Elevate your product photos to stunning visuals",
       icon: <Camera className="w-4 h-4 mr-2 text-purple-500" />,
+      link: "/dashboard/product-photoshoots",
     },
     {
       title: "Fashion Photoshoots",
       desc: "Fit product photos onto AI-generated models",
       icon: <Shirt className="w-4 h-4 mr-2 text-pink-500" />,
+      link: "/dashboard/fashion-photoshoots",
     },
     {
       title: "Stock Image Generation",
       desc: "Generate premium stock images for commercial use",
       icon: <FileImage className="w-4 h-4 mr-2 text-blue-500" />,
+      link: "/dashboard/stock-image-generation",
     },
     {
       title: "Text & Headlines",
       desc: "Generate high-conversion-rate text",
       icon: <Type className="w-4 h-4 mr-2 text-green-500" />,
+      link: "/dashboard/text-headlines",
     },
     {
       title: "Product Videoshoots",
       desc: "Turn your product photos into videos",
       icon: <VideoIcon className="w-4 h-4 mr-2 text-rose-500" />,
       isNew: true,
+      link: "/dashboard/product-videoshoots",
     },
     {
       title: "Stock Videos",
       desc: "Generate safe stock videos",
       icon: <Film className="w-4 h-4 mr-2 text-yellow-500" />,
       isNew: true,
+      link: "/dashboard/stock-videos",
     },
     {
       title: "Instant Ads",
       desc: "Launch conversion-driven ads effortlessly",
       icon: <Zap className="w-4 h-4 mr-2 text-orange-400" />,
       isNew: true,
+      link: "/dashboard/instant-ads",
     },
     {
       title: "Creative Utility Suite",
       desc: "All-in-one toolkit for creatives",
       icon: <Wrench className="w-4 h-4 mr-2 text-gray-500" />,
       isNew: true,
+      link: "/dashboard/creative-utility-suite",
     },
     {
       title: "Buyer Personas",
       desc: "AI profiling for targeting",
       icon: <Users className="w-4 h-4 mr-2 text-blue-400" />,
       isNew: true,
+      link: "/dashboard/buyer-personas",
     },
   ],
   Analyse: [
@@ -93,17 +104,20 @@ const features: Record<string, FeatureItem[]> = {
       title: "Creative Insights",
       desc: "Identify top-performing creatives",
       icon: <BarChart className="w-4 h-4 mr-2 text-purple-400" />,
+      link: "/dashboard/creative-insights",
     },
     {
       title: "Competitor Insights",
       desc: "Gain insights from competitors",
       icon: <Star className="w-4 h-4 mr-2 text-yellow-400" />,
+      link: "/dashboard/competitor-insights",
     },
     {
       title: "Compliance Checker",
       desc: "Avoid ad violations",
       icon: <ShieldCheck className="w-4 h-4 mr-2 text-green-400" />,
       isNew: true,
+      link: "/dashboard/compliance-checker",
     },
   ],
   Predict: [
@@ -111,6 +125,7 @@ const features: Record<string, FeatureItem[]> = {
       title: "Creative Scoring",
       desc: "Create UGC-style ads",
       icon: <Star className="w-4 h-4 mr-2 text-pink-400" />,
+      link: "/dashboard/creative-scoring",
     },
   ],
   Automate: [
@@ -118,6 +133,7 @@ const features: Record<string, FeatureItem[]> = {
       title: "Custom Templates",
       desc: "Generate creatives using custom templates",
       icon: <LayoutTemplate className="w-4 h-4 mr-2 text-blue-600" />,
+      link: "/dashboard/custom-templates",
     },
   ],
 };
@@ -127,17 +143,8 @@ export default function Header() {
   const [hoverFeature, setHoverFeature] = useState(false);
   const [featureMenuTimeout, setFeatureMenuTimeout] =
     useState<NodeJS.Timeout | null>(null);
+  const auth = useAuth();
 
-  // const navColors = [
-  //   "bg-pink-500",
-  //   "bg-orange-500",
-  //   "bg-blue-500",
-  //   "bg-green-500",
-  //   "bg-purple-500",
-  //   "bg-yellow-500",
-  //   "bg-rose-500",
-  //   "bg-teal-500",
-  // ];
   const navLinks = [
     { label: "Home", href: "#home", color: "#ec4899" }, // pink-500
     { label: "Features", href: "#features", mega: true, color: "#f59e42" }, // orange-500
@@ -146,6 +153,7 @@ export default function Header() {
     { label: "Testimonials", href: "#testimonials", color: "#f43f5e" }, // rose-500
     { label: "Blog", href: "#blog", color: "#14b8a6" }, // teal-500
   ];
+  if (auth?.loading) return null;
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white/70 backdrop-blur border-b font-kanit border-gray-200">
@@ -229,9 +237,12 @@ export default function Header() {
                             <div className="flex items-center">
                               <span className="group flex items-center font-medium text-sm cursor-pointer text-gray-800">
                                 {item.icon}
-                                <span className="group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:via-pink-500 group-hover:to-purple-500 group-hover:bg-clip-text group-hover:text-transparent transition-colors duration-300 hover:underline">
+                                <Link
+                                  href={item.link || "#"}
+                                  className="group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:via-pink-500 group-hover:to-purple-500 group-hover:bg-clip-text group-hover:text-transparent transition-colors duration-300 hover:underline"
+                                >
                                   {item.title}
-                                </span>
+                                </Link>
                               </span>
                               {item.isNew && (
                                 <span className="ml-2 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
@@ -252,27 +263,26 @@ export default function Header() {
             </div>
           ))}
 
-          <SignedIn>
+          {auth?.user && (
             <a
               href="/dashboard"
               className="text-purple-600 font-semibold hover:underline"
             >
               Dashboard
             </a>
-          </SignedIn>
+          )}
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:brightness-110 shadow-md">
-                Sign in
-              </button>
-            </SignInButton>
-          </SignedOut>
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
+          {!auth?.user ? (
+            <button className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:brightness-110 shadow-md">
+              Sign in
+            </button>
+          ) : (
+            <div>
+              <div className="w-10 h-10 border bg-red-600 rounded-full"></div>
+            </div>
+          )}
         </div>
 
         <div className="md:hidden">
@@ -294,7 +304,7 @@ export default function Header() {
               {link.label}
             </a>
           ))}
-          <SignedIn>
+          {auth?.user && (
             <a
               href="/dashboard"
               className="block text-purple-600 font-bold py-2 hover:text-purple-800 transition"
@@ -302,18 +312,14 @@ export default function Header() {
             >
               Dashboard
             </a>
-          </SignedIn>
+          )}
+
           <div className="pt-2">
-            <SignedOut>
-              <SignInButton mode="modal">
-                <button className="w-full bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:brightness-110 shadow-md">
-                  Sign in
-                </button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            {auth?.user && (
+              <button className="w-full bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:brightness-110 shadow-md">
+                Sign in
+              </button>
+            )}
           </div>
         </div>
       )}
