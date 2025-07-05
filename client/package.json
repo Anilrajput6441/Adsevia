@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.22.0",
     "@types/uuid": "^10.0.0",
     "axios": "^1.10.0",
     "clsx": "^2.1.1",

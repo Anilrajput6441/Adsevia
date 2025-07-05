@@ -117,7 +117,7 @@ export default function CreateAdPage() {
 
   return (
     <div className="min-h-screen pt-20 bg-gradient-to-br font-kanit from-pink-100 via-purple-100 to-orange-100 p-6">
-      <div className="max-w-6xl border-2  border-red-700 mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Form Section */}
         <form
           onSubmit={handleSubmit}
