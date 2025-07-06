@@ -4,12 +4,14 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
-  type: "text" | "image" | "video";
+  type: "text" | "image" | "video" | "mixed";
   content: string;
+  mediaUrl?: string; // For mixed content (text + media)
 }
 
 export default function AIAssistantPanel() {
@@ -37,87 +39,188 @@ export default function AIAssistantPanel() {
     setLoading(true);
 
     try {
-      // Simulate API response for now
-      setTimeout(() => {
-        const assistantMsg: Message = {
+      const response = await axios.post(
+        "http://localhost:3001/api/ads/generate",
+        {
+          prompt,
+          mode,
+        }
+      );
+
+      const data = response.data;
+      let assistantMsg: Message;
+
+      // Determine response type based on actual response data, not mode
+      const hasText = data.result && typeof data.result === "string";
+      const hasImage = data.imageUrl && typeof data.imageUrl === "string";
+      const hasVideo = data.videoUrl && typeof data.videoUrl === "string";
+
+      if (hasText && (hasImage || hasVideo)) {
+        // Mixed content: text + media
+        assistantMsg = {
+          id: uuidv4(),
+          role: "assistant",
+          type: "mixed",
+          content: data.result,
+          mediaUrl: data.imageUrl || data.videoUrl,
+        };
+      } else if (hasText && !hasImage && !hasVideo) {
+        // Text only
+        assistantMsg = {
           id: uuidv4(),
           role: "assistant",
           type: "text",
-          content: `Here's a sample response for your ${mode} request: "${prompt}". This is a placeholder response.`,
+          content: data.result,
         };
-        setMessages((prev) => [...prev, assistantMsg]);
-        setPrompt("");
-        setLoading(false);
-      }, 1000);
+      } else if (hasImage && !hasText) {
+        // Image only
+        assistantMsg = {
+          id: uuidv4(),
+          role: "assistant",
+          type: "image",
+          content: data.imageUrl,
+        };
+      } else if (hasVideo && !hasText) {
+        // Video only
+        assistantMsg = {
+          id: uuidv4(),
+          role: "assistant",
+          type: "video",
+          content: data.videoUrl,
+        };
+      } else {
+        // Fallback: treat as text
+        assistantMsg = {
+          id: uuidv4(),
+          role: "assistant",
+          type: "text",
+          content: data.result || data.message || "No response received",
+        };
+      }
 
-      // TODO: Uncomment when APIs are ready
-      // if (mode === "text") {
-      //   const response = await fetch("/api/ads/generate", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({ prompt }),
-      //   });
-      //   const data = await response.json();
-      //   setMessages((prev) => [
-      //     ...prev,
-      //     {
-      //       id: uuidv4(),
-      //       role: "assistant",
-      //       type: "text",
-      //       content: data.result,
-      //     },
-      //   ]);
-      // } else if (mode === "image") {
-      //   const response = await fetch("/api/image-gen", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({ prompt }),
-      //   });
-      //   const data = await response.json();
-      //   setMessages((prev) => [
-      //     ...prev,
-      //     {
-      //       id: uuidv4(),
-      //       role: "assistant",
-      //       type: "image",
-      //       content: data.imageUrl,
-      //     },
-      //   ]);
-      // } else if (mode === "video") {
-      //   const response = await fetch("/api/video-gen", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({ prompt }),
-      //   });
-      //   const data = await response.json();
-      //   setMessages((prev) => [
-      //     ...prev,
-      //     {
-      //       id: uuidv4(),
-      //       role: "assistant",
-      //       type: "video",
-      //       content: data.videoUrl,
-      //     },
-      //   ]);
-      // }
+      setMessages((prev) => [...prev, assistantMsg]);
+      setPrompt("");
     } catch (err) {
       console.error("Error generating content:", err);
+
+      let errorMessage = "❌ Something went wrong. Please try again later.";
+
+      if (axios.isAxiosError(err)) {
+        errorMessage =
+          err.response?.data?.message || err.message || errorMessage;
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           id: uuidv4(),
           role: "assistant",
           type: "text",
-          content: "❌ Something went wrong. Please try again later.",
+          content: errorMessage,
         },
       ]);
-      setPrompt("");
+    } finally {
       setLoading(false);
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleGenerate();
+    }
+  };
+
+  const renderMessageContent = (msg: Message) => {
+    switch (msg.type) {
+      case "text":
+        return <p className="text-sm leading-relaxed">{msg.content}</p>;
+
+      case "image":
+        return (
+          <div className="space-y-2">
+            <Image
+              src={msg.content}
+              alt="Generated"
+              width={400}
+              height={300}
+              className="rounded-lg shadow-md max-w-full"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src =
+                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%236b7280' font-family='Arial' font-size='16'%3EImage not available%3C/text%3E%3C/svg%3E";
+              }}
+            />
+          </div>
+        );
+
+      case "video":
+        return (
+          <div className="space-y-2">
+            <video
+              controls
+              src={msg.content}
+              className="w-full max-w-md rounded-lg shadow-md"
+              onError={(e) => {
+                const target = e.target as HTMLVideoElement;
+                target.style.display = "none";
+                const errorDiv = document.createElement("div");
+                errorDiv.className = "p-4 bg-red-50 text-red-600 rounded-lg";
+                errorDiv.textContent = "Video not available";
+                target.parentNode?.appendChild(errorDiv);
+              }}
+            />
+          </div>
+        );
+
+      case "mixed":
+        const isVideo =
+          msg.mediaUrl?.includes(".mp4") ||
+          msg.mediaUrl?.includes(".webm") ||
+          msg.mediaUrl?.includes(".avi");
+        return (
+          <div className="space-y-3">
+            <p className="text-sm leading-relaxed">{msg.content}</p>
+            {isVideo ? (
+              <video
+                controls
+                src={msg.mediaUrl}
+                className="w-full max-w-md rounded-lg shadow-md"
+                onError={(e) => {
+                  const target = e.target as HTMLVideoElement;
+                  target.style.display = "none";
+                  const errorDiv = document.createElement("div");
+                  errorDiv.className = "p-4 bg-red-50 text-red-600 rounded-lg";
+                  errorDiv.textContent = "Video not available";
+                  target.parentNode?.appendChild(errorDiv);
+                }}
+              />
+            ) : (
+              <Image
+                src={msg.mediaUrl || ""}
+                alt="Generated"
+                width={400}
+                height={300}
+                className="rounded-lg shadow-md max-w-full"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src =
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%236b7280' font-family='Arial' font-size='16'%3EImage not available%3C/text%3E%3C/svg%3E";
+                }}
+              />
+            )}
+          </div>
+        );
+
+      default:
+        return <p className="text-sm">{msg.content}</p>;
+    }
+  };
+
   return (
-    <div className="bg-white  overflow-scroll flex flex-col h-[90vh]">
+    <div className="bg-white overflow-scroll flex flex-col h-[90vh]">
       {/* Mode Selector */}
       <div className="flex gap-2 mb-2 p-4">
         {(["text", "image", "video"] as const).map((m) => (
@@ -135,29 +238,35 @@ export default function AIAssistantPanel() {
 
       {/* Chat Feed */}
       <div className="flex-1 overflow-y-auto mb-4 space-y-3 border rounded p-3 bg-gray-50 mx-4">
+        {messages.length === 0 && (
+          <div className="text-center text-gray-500 py-8">
+            <p>Start a conversation with AI Assistant</p>
+            <p className="text-sm">
+              Ask for ad copy, headlines, or creative ideas
+            </p>
+          </div>
+        )}
+
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`max-w-[75%] p-3 rounded ${
-              msg.role === "user" ? "ml-auto bg-white" : "mr-auto bg-gray-200"
+            className={`max-w-[85%] p-4 rounded-lg ${
+              msg.role === "user"
+                ? "ml-auto bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white"
+                : "mr-auto bg-white border shadow-sm"
             }`}
           >
-            {msg.type === "text" && <p>{msg.content}</p>}
-            {msg.type === "image" && (
-              <Image
-                src={msg.content}
-                alt="Generated"
-                width={300}
-                height={200}
-                className="rounded"
-              />
-            )}
-            {msg.type === "video" && (
-              <video controls src={msg.content} className="w-full rounded" />
-            )}
+            {renderMessageContent(msg)}
           </div>
         ))}
-        {loading && <p className="text-sm text-gray-500">AI is thinking...</p>}
+        {loading && (
+          <div className="flex items-center justify-center py-4">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+            <span className="ml-2 text-sm text-gray-500">
+              AI is thinking...
+            </span>
+          </div>
+        )}
         {/* Invisible div for auto-scroll */}
         <div ref={chatEndRef} />
       </div>
@@ -167,16 +276,18 @@ export default function AIAssistantPanel() {
         <textarea
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
+          onKeyPress={handleKeyPress}
           rows={2}
-          className="flex-1 border rounded p-2"
-          placeholder="Describe your idea..."
+          className="flex-1 border rounded p-2 resize-none"
+          placeholder={`Describe your ${mode} idea... `}
+          disabled={loading}
         ></textarea>
         <button
           onClick={handleGenerate}
-          disabled={loading}
-          className="bg-black text-white px-4 py-2 rounded"
+          disabled={loading || !prompt.trim()}
+          className="bg-black text-white px-4 py-2 rounded disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          {loading ? "..." : "Generate"}
+          {loading ? "Generating..." : "Generate"}
         </button>
       </div>
     </div>
