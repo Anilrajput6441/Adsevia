@@ -21,6 +21,7 @@ import {
   Star,
   LayoutTemplate,
 } from "lucide-react";
+import Image from "next/image";
 
 // Define a type for feature items
 interface FeatureItem {
@@ -146,19 +147,19 @@ export default function Header() {
   const auth = useAuth();
 
   const navLinks = [
-    { label: "Home", href: "#home", color: "#ec4899" }, // pink-500
-    { label: "Features", href: "#features", mega: true, color: "#f59e42" }, // orange-500
+    { label: "Home", href: "/", color: "#ec4899" }, // pink-500
+    { label: "Features", href: "/features", mega: true, color: "#f59e42" }, // orange-500
     { label: "How It Works", href: "#how-it-works", color: "#3b82f6" }, // blue-500
-    { label: "Pricing", href: "#pricing", color: "#a21caf" }, // purple-500
-    { label: "Testimonials", href: "#testimonials", color: "#f43f5e" }, // rose-500
-    { label: "Blog", href: "#blog", color: "#14b8a6" }, // teal-500
+    { label: "Pricing", href: "/#pricing", color: "#a21caf" }, // purple-500
+    { label: "Testimonials", href: "/#testimonials", color: "#f43f5e" }, // rose-500
+    { label: "Blog", href: "/blog", color: "#14b8a6" }, // teal-500
   ];
   if (auth?.loading) return null;
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white/70 backdrop-blur border-b font-kanit border-gray-200">
       <div className="mx-auto max-w-7xl px-4 flex justify-between items-center h-16">
-        <Link href="#home" className="text-4xl font-bold font-darumadrop">
+        <Link href="/" className="text-4xl font-bold font-darumadrop">
           <span className="text-orange-500">A</span>
           <span className="text-blue-500">d</span>
           <span className="text-green-500">s</span>
@@ -266,7 +267,7 @@ export default function Header() {
           {auth?.user && (
             <a
               href="/dashboard"
-              className="text-purple-600 font-semibold hover:underline"
+              className="bg-gradient-to-r from-orange-600 via-pink-500 to-purple-500 p-2 rounded-full px-5 text-white   hover:underline"
             >
               Dashboard
             </a>
@@ -275,12 +276,25 @@ export default function Header() {
 
         <div className="hidden md:flex items-center gap-4">
           {!auth?.user ? (
-            <button className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:brightness-110 shadow-md">
-              Sign in
-            </button>
+            <a href="/login">
+              {" "}
+              <button className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:brightness-110 shadow-md">
+                Sign in
+              </button>
+            </a>
           ) : (
             <div>
-              <div className="w-10 h-10 border bg-red-600 rounded-full"></div>
+              <a href="/profile" className="flex items-center gap-4">
+                <h1 className="text-black">Anil Behera</h1>
+                <div className=" w-10 h-10 border bg-red-600 rounded-full overflow-hidden">
+                  <Image
+                    src="/photo-to-photoshoot/final.jpg"
+                    width={300}
+                    height={300}
+                    alt="user-image"
+                  />
+                </div>
+              </a>
             </div>
           )}
         </div>

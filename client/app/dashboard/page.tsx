@@ -15,8 +15,10 @@ export default function Dashboard() {
     }
   }, [user, router]);
 
-  if (!user) return null;
-
+  if (!user) {
+    // Optional: Show a loading spinner or message while redirecting
+    return <div>Redirecting to login...</div>;
+  }
   return (
     <div className="min-h-screen bg-gray-100 p-8 mt-20 flex flex-col justify-between">
       <div className="max-w-6xl mx-auto w-full">

@@ -53,7 +53,10 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-20 grid gap-10 font-kanit md:grid-cols-2">
+    <section
+      id="testimonials"
+      className="max-w-7xl mx-auto px-6 py-20 grid gap-10 font-kanit md:grid-cols-2"
+    >
       <div>
         {" "}
         <h2 className="text-4xl md:text-5xl font-bold font-kanit py-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500">

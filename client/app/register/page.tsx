@@ -1,67 +1,51 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import axios from "axios";
 import Image from "next/image";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const auth = useAuth();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (!auth?.loading && auth?.user) {
-      router.replace("/dashboard");
-    }
-  }, [auth?.loading, auth?.user, router]);
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3001/api/auth/login", {
+      const res = await axios.post("http://localhost:3001/api/auth/register", {
+        name,
         email,
         password,
       });
-
       auth?.login(res.data.user, res.data.token);
       router.push("/dashboard");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      alert(err.response?.data?.message || "Login failed");
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      alert(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (auth?.loading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-lg font-medium">
-        Checking authentication...
-      </div>
-    );
-  }
-
-  if (auth?.user) return null;
-
   return (
-    <div className="relative w-full h-screen flex justify-center items-center  overflow-hidden">
+    <div className="relative w-full h-screen flex justify-center items-center overflow-hidden">
       {/* Background graphic */}
       <div className="absolute z-0 w-[35rem] h-[35rem] rounded-full bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 "></div>
-
-      {/* Optional image layer (remove if not needed) */}
       <Image
         src="/svg4.svg"
-        alt="Login Illustration"
+        alt="Register Illustration"
         width={500}
         height={400}
         className="absolute z-1 w-full h-full object-contain"
       />
-
-      {/* Login form */}
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleRegister}
         className="z-10 bg-white border border-gray-200 shadow-xl rounded-xl px-8 py-6 w-full max-w-md"
       >
         <div className="text-center text-4xl font-darumadrop mb-4 tracking-wide">
@@ -74,9 +58,16 @@ export default function LoginPage() {
           <span className="text-blue-800">a</span>
         </div>
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
-          Login
+          Register
         </h1>
-
+        <input
+          className="border border-gray-300 rounded-md mb-4 w-full p-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
         <input
           className="border border-gray-300 rounded-md mb-4 w-full p-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
           type="email"
@@ -93,21 +84,20 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
         <button
           className="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 w-full rounded-md transition font-semibold"
           type="submit"
+          disabled={loading}
         >
-          Login
+          {loading ? "Registering..." : "Register"}
         </button>
-
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
+          Already have an account?{" "}
           <span
             className="text-purple-700 font-semibold cursor-pointer hover:underline"
-            onClick={() => router.push("/register")}
+            onClick={() => router.push("/login")}
           >
-            Register
+            Login
           </span>
         </p>
       </form>

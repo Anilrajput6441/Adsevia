@@ -2,7 +2,7 @@ import React from "react";
 
 export default function PricingSection() {
   return (
-    <section className="bg-gray-50 py-16 font-kanit">
+    <section id="pricing" className="bg-gray-50 py-16 font-kanit">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold mb-2">
           Plans That Scale With Your Growth
