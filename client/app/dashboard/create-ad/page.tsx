@@ -2,11 +2,12 @@
 // File: app/dashboard/create/page.tsx
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import AIAssistantPanel from "@/app/components/AIAssistantPanel";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CreateAdPage() {
   const [platform, setPlatform] = useState("meta");
@@ -22,6 +23,20 @@ export default function CreateAdPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
+
+  //check login ----------->>>>>>>>
+  const { user } = useAuth()!;
+
+  useEffect(() => {
+    if (!user) {
+      router.replace("/login");
+    }
+  }, [user, router]);
+
+  if (!user) {
+    // Optional: Show a loading spinner or message while redirecting
+    return <div>Redirecting to login...</div>;
+  }
 
   const handleFileUpload = (files: FileList | null) => {
     if (!files) return;

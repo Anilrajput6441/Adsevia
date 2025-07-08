@@ -4,6 +4,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import MetaAdsDashboard from "../components/Dashboard-Components/MetaAdsDashboard";
 
 export default function Dashboard() {
   const { user, logout } = useAuth()!;
@@ -35,23 +36,8 @@ export default function Dashboard() {
             + Create New Ad
           </button>
         </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          <div className="bg-white p-6 rounded shadow">
-            <h2 className="text-lg font-semibold mb-2">Total Ads Created</h2>
-            <p className="text-3xl font-bold text-blue-600">12</p>
-          </div>
-          <div className="bg-white p-6 rounded shadow">
-            <h2 className="text-lg font-semibold mb-2">Ad Clicks</h2>
-            <p className="text-3xl font-bold text-green-600">3.5K</p>
-          </div>
-          <div className="bg-white p-6 rounded shadow">
-            <h2 className="text-lg font-semibold mb-2">Conversion Rate</h2>
-            <p className="text-3xl font-bold text-purple-600">7.2%</p>
-          </div>
-        </div>
       </div>
+      <MetaAdsDashboard isConnected={false} />
 
       {/* Bottom Right Logout */}
       <div className="flex justify-end max-w-6xl mx-auto w-full">

@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const aiRoutes = require("./routes/aiRoutes");
-
+const metaAuthRoutes = require("./routes/metaAuthRoutes");
 // Load env vars
 dotenv.config();
 
@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/ads", aiRoutes); // This prefixes all aiRoutes with /api/ads
-
+app.use("/api/meta", metaAuthRoutes);
 // Sample route
 app.get("/", (req, res) => {
   res.send("Adsevia backend running 🚀");
